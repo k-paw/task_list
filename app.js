@@ -99,7 +99,9 @@ function storeTaskInLocalStorage(task) {
   } else {
     tasks = JSON.parse(localStorage.getItem("tasks"));
   }
+
   tasks.push(task);
+
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
@@ -108,13 +110,38 @@ function removeTask(e) {
   if (e.target.parentElement.classList.contains("delete-item")) {
     if (confirm("Are you sure?")) {
       e.target.parentElement.parentElement.remove();
+
+      //remove from ls
+      removeTaskFromLocalStorage(e.target.parentElement.parentElement);
     }
   }
 }
 
+function removeTaskFromLocalStorage(taskItem) {
+  let tasks;
+  if (localStorage.getItem("tasks") === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+  }
+
+  tasks.forEach(function (task, index) {
+    if (taskItem.textContent === task) {
+      tasks.splice(index, 1);
+    }
+  });
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 //clear tasks
 function clearTasks(e) {
   taskList.innerHTML = "";
+
+  clearTasksFromLocalStorage();
+}
+
+function clearTasksFromLocalStorage() {
+  localStorage.clear();
 }
 
 //filter tasks
